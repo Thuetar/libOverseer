@@ -26,7 +26,8 @@ namespace mpu6000 {
             std::deque<std::pair<unsigned long, float>> gx_history;
             std::deque<std::pair<unsigned long, float>> gy_history;
             std::deque<std::pair<unsigned long, float>> gz_history;
-            //Comment, attempt to limit the size.
+            //Comment, maybe... attempt to limit the size.
+            const std::vector<unsigned long> g_windows = {1, 5, 10, 15, 30, 45, 60};
             //const std::vector<unsigned long> g_windows = {1, 5, 10, 15, 30, 45, 60, 300, 600, 900, 1800}; // in seconds
 
             // Internal helpers to track max values

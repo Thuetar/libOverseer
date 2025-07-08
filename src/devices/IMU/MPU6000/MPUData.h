@@ -27,6 +27,15 @@ namespace mpu6000 {
     };
 
     struct MPUData {
+        //Vector3f accel;
+        //Vector3f gyro;
+
+        uint64_t total_samples = 0;
+        uint64_t dropped_samples = 0;
+        float samples_per_second = 0.0f;
+
+        //Vector3f max_g;
+        //std::map<String, Vector3f> max_g_windows;
         // Current orientation and acceleration
         float pitch_deg = 0.0f;
         float roll_deg = 0.0f;

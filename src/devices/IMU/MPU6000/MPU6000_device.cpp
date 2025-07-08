@@ -115,7 +115,7 @@ namespace mpu6000 {
         gx_history.push_back({now, abs(d.gx_smooth)});
         gy_history.push_back({now, abs(d.gy_smooth)});
         gz_history.push_back({now, abs(d.gz_smooth)});
-        /*
+        //*
         // Clear old samples outside the largest window
         auto cutoff = now - g_windows.back() * 1000;
         auto clean = [cutoff](auto& deque) {
@@ -141,7 +141,7 @@ namespace mpu6000 {
             d.max_g_windows_y[label] = max_y;
             d.max_g_windows_z[label] = max_z;
         }
-            */
+            //*/
     }
 
     void MPU6000::update() {
@@ -172,11 +172,14 @@ namespace mpu6000 {
         updateWindowMax(_data.max_30s, _data.gx, _data.gy, _data.gz, now, 30000);
         updateWindowMax(_data.max_45s, _data.gx, _data.gy, _data.gz, now, 45000);
         updateWindowMax(_data.max_60s, _data.gx, _data.gy, _data.gz, now, 60000);
+        /*
         updateWindowMax(_data.max_1m, _data.gx, _data.gy, _data.gz, now, 60000);
         updateWindowMax(_data.max_5m, _data.gx, _data.gy, _data.gz, now, 300000);
         updateWindowMax(_data.max_10m, _data.gx, _data.gy, _data.gz, now, 600000);
         updateWindowMax(_data.max_15m, _data.gx, _data.gy, _data.gz, now, 900000);
         updateWindowMax(_data.max_30m, _data.gx, _data.gy, _data.gz, now, 1800000);
+        */
+       
     }
 
     void MPU6000::setData(const data::MPUData& newData) {
