@@ -1,0 +1,23 @@
+{
+  "name": "libOverseer",
+  "version": "0.0.1",
+  "description": "Shared Library",
+  "keywords": "planetCoach",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/jthuet/libOverseer.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Justin Thuet",
+      "email": "jthuet@gmail.com.com",
+      "url": "https://google.com"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://www.helloworld.org/",  
+  "frameworks": "*",
+  "platforms": "*"
+}
