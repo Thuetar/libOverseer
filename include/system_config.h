@@ -10,8 +10,10 @@ namespace overseer{
         bool debug_enable = true;
         struct DEBUG_OPTIONS {
             bool enable_imu_print = true;
-            unsigned long imu_log_message_interval = 5000;
+            unsigned long log_message_interval = 5000;
+            unsigned long log_last_print_time = 0;
             unsigned long imu_log_last_print_time = 0;
+            unsigned long imu_log_message_interval = 5000;
         };
 
         struct HARDWARE_CONFIG
@@ -78,7 +80,7 @@ namespace overseer{
                 //FILTER_CONFIG filter_config;
             };
             IMU imu;
-            //WCS_FAMILY sensor_dc_device_1;
+            WCS_FAMILY sensor_dc_device_1;
         };
 
         DEBUG_OPTIONS debug_options;    

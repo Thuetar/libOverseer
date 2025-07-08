@@ -34,9 +34,7 @@ namespace overseer::device::imu {
         return true;
     }
 
-    void MPU6000::configureHardware() {
-        
-        // Example:
+    void MPU6000::configureHardware() {        
         mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
         mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2); // or _4, _8, _16
         // Could add more config here
@@ -49,16 +47,31 @@ namespace overseer::device::imu {
     void MPU6000::printMPUData(const MPUData& data) {
         Serial.println("=== IMU DATA REPORT ===");
         Serial.printf("Pitch: %.2f deg, Roll: %.2f deg\n", data.pitch_deg, data.roll_deg);
-        Serial.printf("Raw G:    gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx, data.gy, data.gz);
-        Serial.printf("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx_smooth, data.gy_smooth, data.gz_smooth);
+        //Serial.printf("Raw G:    gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx, data.gy, data.gz);
+        //Serial.printf("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx_smooth, data.gy_smooth, data.gz_smooth);
 
-        Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
-        
+        //Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
+        auto max_gforce = max(gx, gy, gz);
+        Serial.printf("Lifetime Max G: %.3f)
         Serial.println("----- Stats -----");
         Serial.printf("Total Samples: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n\n",
                     data.total_samples, data.dropped_samples, data.samples_per_second);
+        
         Serial.println("----- Variables -----");
         Serial.printf("smoothing_alpha: %F, spike_threshold: %F\n", smoothing_alpha, spike_threshold);
+        /*
+        Serial.println("--- Rolling Max G Windows ---");
+        using pair_type = decltype(data.max_g_windows_x)::value_type;
+        Serial.printf("X Windows Cnt: %d\n", data.max_g_windows_x.size());
+        auto pr = std::max_element
+        (
+            std::begin(data.max_g_windows_x), std::end(data.max_g_windows_x),
+            [] (const pair_type & p1, const pair_type & p2) {
+                return p1.second < p2.second;
+            }
+        );
+        Serial.printf("X Windows Max: %.3f\n", pr);
+        */
         /*
         Serial.println("--- Rolling Max G Windows ---");
         for (const auto& [label, val] : data.max_g_windows_x) {
