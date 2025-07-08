@@ -6,7 +6,7 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/jthuet/libOverseer.git"
+    "url": "https://github.com/Thuetar/libOverseer.git"
   },
   "authors":
   [
@@ -19,5 +19,11 @@
   "license": "MIT",
   "homepage": "https://www.helloworld.org/",  
   "frameworks": "*",
-  "platforms": "*"
+  "platforms": "*",
+  "build": {
+    "flags": [
+      "-Iinclude"
+    ]
+  },
+  "includes": ["include"]
 }
