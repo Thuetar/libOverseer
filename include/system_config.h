@@ -1,8 +1,7 @@
 //system_config.h
 #pragma once
 
-#include "devices/IMU/MPU6000/MPU6000.h"    
-#include "devices/IMU/MPU6000/MPU6000_instance.h"
+//#include "device/IMU/MPU6000.h"    
 
 using namespace overseer::device::imu;
 namespace overseer{
@@ -45,8 +44,8 @@ namespace overseer{
                 unsigned long last_update_time = 0;
                 MPU6000* mpu = nullptr;   
                 struct PINS {
-                    uint8_t sda = 20; 
-                    uint8_t scl = 21;            
+                    uint8_t sda = 1; 
+                    uint8_t scl = 2;            
                 };
                 struct FILTER_CONFIG {
                     float smoothing_alpha = 0.1f;           // EMA alpha
@@ -57,7 +56,29 @@ namespace overseer{
                 PINS pins;
                 FILTER_CONFIG filter_config;
             };
+            
+            struct WCS_FAMILY
+            {
+                bool enabled = true;
+                unsigned long update_interval = 500;
+                unsigned long last_update_time = 0;
+
+                /* MPU6000* mpu = nullptr;   
+                struct PINS {
+                    uint8_t sda = 20; 
+                    uint8_t scl = 21;            
+                };
+                struct FILTER_CONFIG {
+                    float smoothing_alpha = 0.1f;           // EMA alpha
+                    float spike_threshold = 3.0f;           // G spike rejection threshold
+                    float window_smoothing_alpha = 0.5f;    // smoothing factor for G max windows
+                }; */
+
+                //PINS pins;
+                //FILTER_CONFIG filter_config;
+            };
             IMU imu;
+            //WCS_FAMILY sensor_dc_device_1;
         };
 
         DEBUG_OPTIONS debug_options;    

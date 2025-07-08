@@ -1,0 +1,17 @@
+#pragma once
+#include "device/IMU/MPU6000/MPUData.h"
+//#include <ArduinoJson.h>
+#include "ArduinoJson.h"
+//#include <String.h>
+//using namespace overseer::device::imu::data;
+namespace overseer::device::data {
+    class data_flop
+    {
+        private:
+            /* data */
+        public:
+            //data_flop(/* args */);
+            //~data_flop();
+            void data_flop::serialize_mpudata (const MPUData& data, JsonDocument& doc);
+    };
+}

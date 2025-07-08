@@ -1,20 +1,13 @@
-//
-// !!! WARNING !!! AUTO-GENERATED FILE!
-// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
-// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
-//
 {
     "configurations": [
         {
             "name": "PlatformIO",
             "includePath": [
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/include",
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/src",
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/I2Cdevlib-MPU6050",
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/I2Cdevlib-Core",
+                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/include/**",
+                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/src/**",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/ArduinoJson/src",
-                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/ArduinoLog",
+                "/Users/justin/Documents/PlatformIO/Projects/libOverseer/lib/simpleini-4.22",
+                "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -221,7 +214,6 @@
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/Ethernet/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FFat/src",
-                "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPClient/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdate/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
@@ -243,18 +235,16 @@
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
-                ""
+                "/Users/justin/Documents/PlatformIO/Projects/IMU_ESP32_MINI/.pio/libdeps/nodemcu-32s/ADS1X15"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "/Users/justin/Documents/PlatformIO/Projects/libOverseer/include",
                     "/Users/justin/Documents/PlatformIO/Projects/libOverseer/src",
-                    "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/I2Cdevlib-MPU6050",
-                    "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/I2Cdevlib-Core",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
-                    "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/ArduinoJson/src",
-                    "/Users/justin/Documents/PlatformIO/Projects/libOverseer/.pio/libdeps/nodemcu-32s/ArduinoLog",
+                    "/Users/justin/Documents/PlatformIO/Projects/libOverseer/lib/simpleini-4.22",
+                    "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -461,7 +451,6 @@
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/Ethernet/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FFat/src",
-                    "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPClient/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdate/src",
                     "/Users/justin/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
@@ -507,6 +496,7 @@
                 ""
             ],
             "cStandard": "gnu99",
+            "cppStandard": "gnu++11",
             "compilerPath": "/Users/justin/.platformio/packages/toolchain-xtensa-esp32/bin/xtensa-esp32-elf-gcc",
             "compilerArgs": [
                 "-mlongcalls",

@@ -1,0 +1,64 @@
+//data_flop.cpp
+#include "data_flop.h"
+
+data_flop::data_flop(/* args */)
+{
+
+}
+
+data_flop::~data_flop()
+{
+}
+
+void data_flop::serialize_mpudata (const MPUData& data, JsonDocument& doc) {
+    doc["total_samples"] = data.total_samples;
+    doc["dropped_samples"] = data.dropped_samples;
+    doc["samples_per_second"] = data.samples_per_second;
+
+    // Raw values
+    doc["pitch"] = data.pitch_deg;
+    doc["roll"] = data.roll_deg;
+    doc["gx"] = data.gx;
+    doc["gy"] = data.gy;
+    doc["gz"] = data.gz;
+
+    // Smoothed
+    JsonObject smooth = doc.createNestedObject("smooth");
+    smooth["pitch"] = data.pitch_deg_smooth;
+    smooth["roll"] = data.roll_deg_smooth;
+    smooth["gx"] = data.gx_smooth;
+    smooth["gy"] = data.gy_smooth;
+    smooth["gz"] = data.gz_smooth;
+
+    // Last seen values
+    JsonObject last = doc.createNestedObject("last");
+    last["gx"] = data.gx_last;
+    last["gy"] = data.gy_last;
+    last["gz"] = data.gz_last;
+
+    // Lifetime max G
+    JsonObject max = doc.createNestedObject("max_g");
+    max["gx"] = data.max_gx;
+    max["gy"] = data.max_gy;
+    max["gz"] = data.max_gz;
+
+    // Rolling window history
+    JsonObject win_x = doc.createNestedObject("max_g_windows_x");
+    for (const auto& [key, value] : data.max_g_windows_x) {
+        win_x[key] = value;
+    }
+
+    JsonObject win_y = doc.createNestedObject("max_g_windows_y");
+    for (const auto& [key, value] : data.max_g_windows_y) {
+        win_y[key] = value;
+    }
+
+    JsonObject win_z = doc.createNestedObject("max_g_windows_z");
+    for (const auto& [key, value] : data.max_g_windows_z) {
+        win_z[key] = value;
+    }
+}
+
+void serialize_mpudata (auto data) {
+
+}
