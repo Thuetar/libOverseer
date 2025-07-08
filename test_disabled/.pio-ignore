@@ -1,0 +1,3 @@
+# PlatformIO ignore file
+# Exclude all test files from compilation
+*

@@ -3,27 +3,29 @@
   "version": "0.0.1",
   "description": "Shared Library",
   "keywords": "planetCoach",
-  "repository":
-  {
+  "repository": {
     "type": "git",
     "url": "https://github.com/Thuetar/libOverseer.git"
   },
-  "authors":
-  [
+  "authors": [
     {
       "name": "Justin Thuet",
-      "email": "jthuet@gmail.com.com",
+      "email": "jthuet@gmail.com",
       "url": "https://google.com"
     }
   ],
   "license": "MIT",
-  "homepage": "https://www.helloworld.org/",  
+  "homepage": "https://www.helloworld.org/",
   "frameworks": "*",
   "platforms": "*",
+  "includes": ["include"],
   "build": {
-    "flags": [
-      "-Iinclude"
+    "srcFilter": [
+      "+<src/>",
+      "-<test/>",
+      "-<test*>",
+      "-<*/test/>",
+      "-<**/test*>"
     ]
-  },
-  "includes": ["include"]
+  }
 }

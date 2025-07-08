@@ -115,8 +115,8 @@ namespace overseer::device::energy {
                      smoothing_alpha, spike_threshold);
         
         Serial.println("--- Rolling Max Current Windows ---");
-        for (const auto& [label, val] : data.max_current_windows) {
-            Serial.printf(" [%s] Max Current: %.3f A\n", label.c_str(), val);
+        for (const auto& entry : data.max_current_windows) {
+            Serial.printf(" [%s] Max Current: %.3f A\n", entry.first.c_str(), entry.second);
         }
         Serial.println("====================================");
     }
@@ -149,9 +149,9 @@ namespace overseer::device::energy {
             unsigned long window_start = now - window_sec * 1000;
             float max_current = 0.0f;
             
-            for (const auto& [ts, val] : current_history) {
-                if (ts >= window_start) {
-                    max_current = std::max(max_current, val);
+            for (const auto& entry : current_history) {
+                if (entry.first >= window_start) {
+                    max_current = std::max(max_current, entry.second);
                 }
             }
             

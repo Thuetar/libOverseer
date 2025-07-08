@@ -53,7 +53,7 @@ namespace overseer::device::imu {
         //Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
         float max_gforce = std::max(data.gx, std::max(data.gy, data.gz));
 
-        Serial.printf("Lifetime Max G: %.3f", max_gforce);
+        Serial.printf("Lifetime Max G: %.3f\n", max_gforce);
         Serial.println("----- Stats -----");
         Serial.printf("Total Samples: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n\n",
                     data.total_samples, data.dropped_samples, data.samples_per_second);
@@ -183,7 +183,7 @@ namespace overseer::device::imu {
         
         // Clear old samples outside the largest window
         auto cutoff = now - g_windows.back() * 1000;
-        auto clean = [cutoff](auto& deque) {
+        auto clean = [cutoff](std::deque<std::pair<unsigned long, float>>& deque) {
             while (!deque.empty() && deque.front().first < cutoff) deque.pop_front();
         };
         clean(gx_history); clean(gy_history); clean(gz_history);
@@ -197,9 +197,9 @@ namespace overseer::device::imu {
             unsigned long window_start = now - window_sec * 1000;
             float max_x = 0.0f, max_y = 0.0f, max_z = 0.0f;
 
-            for (const auto& [ts, val] : gx_history) if (ts >= window_start) max_x = std::max(max_x, val);
-            for (const auto& [ts, val] : gy_history) if (ts >= window_start) max_y = std::max(max_y, val);
-            for (const auto& [ts, val] : gz_history) if (ts >= window_start) max_z = std::max(max_z, val);
+            for (const auto& entry : gx_history) if (entry.first >= window_start) max_x = std::max(max_x, entry.second);
+            for (const auto& entry : gy_history) if (entry.first >= window_start) max_y = std::max(max_y, entry.second);
+            for (const auto& entry : gz_history) if (entry.first >= window_start) max_z = std::max(max_z, entry.second);
 
             String label = String(window_sec) + "s";
             d.max_g_windows_x[label] = max_x;
