@@ -27,9 +27,7 @@ namespace mpu6000 {
     };
 
     struct MPUData {
-        //Vector3f accel;
-        //Vector3f gyro;
-
+        
         uint64_t total_samples = 0;
         uint64_t dropped_samples = 0;
         float samples_per_second = 0.0f;

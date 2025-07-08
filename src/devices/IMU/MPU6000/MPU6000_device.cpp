@@ -27,6 +27,8 @@ namespace mpu6000 {
             Serial.println("Skipping MPU connection test.");
         #endif
 
+        Log.setLevel (5);
+
         initialized = true;
         return true;
     }
@@ -35,6 +37,28 @@ namespace mpu6000 {
         return initialized;
     }
 
+    void MPU6000::printMPUData(const data::MPUData& data) {
+        Serial.println("=== IMU DATA REPORT ===");
+        Serial.printf("Pitch: %.2f deg, Roll: %.2f deg\n", data.pitch_deg, data.roll_deg);
+        Serial.printf("Raw G:    gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx, data.gy, data.gz);
+        Serial.printf("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx_smooth, data.gy_smooth, data.gz_smooth);
+
+        Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
+
+        Serial.printf("Sample Stats: total=%llu, dropped=%llu, SPS=%.2f\n",
+                    data.total_samples, data.dropped_samples, data.samples_per_second);
+
+        Serial.println("--- Rolling Max G Windows ---");
+        for (const auto& [label, val] : data.max_g_windows_x) {
+            float gy = data.max_g_windows_y.count(label) ? data.max_g_windows_y.at(label) : 0;
+            float gz = data.max_g_windows_z.count(label) ? data.max_g_windows_z.at(label) : 0;
+
+            Serial.printf(" [%s] Gx=%.3f, Gy=%.3f, Gz=%.3f\n", label.c_str(), val, gy, gz);
+        }
+        Serial.println("===========================");
+    }
+
+    /*
     void MPU6000::printMPUData(const mpu6000::data::MPUData& data) {
         Serial.println(F( "=== MPU6050 Sensor Data ===" ));
         Serial.print(F("Pitch: ")); Serial.print(data.pitch_deg); Serial.println(F("°"));
@@ -44,18 +68,13 @@ namespace mpu6000 {
         Serial.print(data.gx_smooth, 3); Serial.print(F(" | "));
         Serial.print(data.gy_smooth, 3); Serial.print(F(" | "));
         Serial.println(data.gz_smooth, 3);
-        /*
-        Serial.print(F("G-Force (gx, gy, gz): "));
-        Serial.print(data.gx, 3); Serial.print(F(" | "));
-        Serial.print(data.gy, 3); Serial.print(F(" | "));
-        Serial.println(data.gz, 3);
-        */
+
         Serial.print(F("Max G Lifetime (gx, gy, gz): "));
         Serial.print(data.max_gx, 3); Serial.print(F(" | "));
         Serial.print(data.max_gy, 3); Serial.print(F(" | "));
         Serial.println(data.max_gz, 3);
         
-/*         //Log.notice    (F(CR "******************************************" CR));
+         //Log.notice    (F(CR "******************************************" CR));
         Serial.println(F("\r\nRolling Max G (selected windows) [max (dir)]:"));
         auto print_window = [](const char* label, const data::GMaxWindow& w) {
             Serial.print(label); Serial.print(": ");
@@ -64,14 +83,33 @@ namespace mpu6000 {
             Serial.print(w.max_gz, 3); Serial.print(" ("); Serial.print(w.dir_gz, 3); Serial.println(")");
         };
 
-        print_window("  1s", data.max_1s);
-        print_window("  5s", data.max_5s);
-        print_window(" 10s", data.max_10s);
-        print_window(" 30s", data.max_30s);
- */
-        //Serial.println(F("============================="));
+        
         Serial.println();
     }
+  
+
+    void MPU6000::printMPUData(const data::MPUData& data) {
+        Log.infoln(F("=== IMU DATA REPORT ==="));
+        Log.infoln(F("Pitch: %.2f deg, Roll: %.2f deg"), data.pitch_deg, data.roll_deg);
+        Log.infoln(F("Raw G:  gx=%.3f, gy=%.3f, gz=%.3f"), data.gx, data.gy, data.gz);
+        Log.infoln(F("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f"), data.gx_smooth, data.gy_smooth, data.gz_smooth);
+        
+        Log.infoln(F("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f"), data.max_gx, data.max_gy, data.max_gz);
+        
+        Log.infoln(F("Sample Stats: total=%llu, dropped=%llu, SPS=%.2f"),
+                data.total_samples, data.dropped_samples, data.samples_per_second);
+
+        Log.infoln(F("--- Rolling Max G Windows ---"));
+        for (const auto& [label, val] : data.max_g_windows_x) {
+            float gy = data.max_g_windows_y.count(label) ? data.max_g_windows_y.at(label) : 0;
+            float gz = data.max_g_windows_z.count(label) ? data.max_g_windows_z.at(label) : 0;
+
+            Log.infoln(F(" [%s] Gx=%.3f, Gy=%.3f, Gz=%.3f"),
+                    label.c_str(), val, gy, gz);
+        }
+        Log.infoln(F("==========================="));
+    }
+  */
     /*
     void MPU6000::smoothAndFilterMPUData(mpu6000::data::MPUData& data, float smoothing_alpha, float spike_threshold) {
         auto reject_spike = [&](float current, float last) {
@@ -115,7 +153,7 @@ namespace mpu6000 {
         gx_history.push_back({now, abs(d.gx_smooth)});
         gy_history.push_back({now, abs(d.gy_smooth)});
         gz_history.push_back({now, abs(d.gz_smooth)});
-        //*
+        
         // Clear old samples outside the largest window
         auto cutoff = now - g_windows.back() * 1000;
         auto clean = [cutoff](auto& deque) {
@@ -146,10 +184,11 @@ namespace mpu6000 {
 
     void MPU6000::update() {
         if (!initialized) return;
-
+        unsigned long now = millis();        
+        total_samples++; // Do sample stats update 
         int16_t ax, ay, az;
         int16_t gx_raw, gy_raw, gz_raw;
-
+        
         mpu.getMotion6(&ax, &ay, &az, &gx_raw, &gy_raw, &gz_raw);
 
         _data.gx = gx_raw / 16384.0f;
@@ -159,7 +198,7 @@ namespace mpu6000 {
         _data.pitch_deg = atan2(ax, sqrt(ay * ay + az * az)) * 180.0f / PI;
         _data.roll_deg  = atan2(ay, sqrt(ax * ax + az * az)) * 180.0f / PI;
 
-        unsigned long now = millis();
+        
 
         if (fabs(_data.gx) > fabs(_data.max_gx)) _data.max_gx = _data.gx;
         if (fabs(_data.gy) > fabs(_data.max_gy)) _data.max_gy = _data.gy;
@@ -169,17 +208,37 @@ namespace mpu6000 {
         updateWindowMax(_data.max_5s, _data.gx, _data.gy, _data.gz, now, 5000);
         updateWindowMax(_data.max_10s, _data.gx, _data.gy, _data.gz, now, 10000);
         updateWindowMax(_data.max_15s, _data.gx, _data.gy, _data.gz, now, 15000);
+
         updateWindowMax(_data.max_30s, _data.gx, _data.gy, _data.gz, now, 30000);
         updateWindowMax(_data.max_45s, _data.gx, _data.gy, _data.gz, now, 45000);
         updateWindowMax(_data.max_60s, _data.gx, _data.gy, _data.gz, now, 60000);
-        /*
+        
         updateWindowMax(_data.max_1m, _data.gx, _data.gy, _data.gz, now, 60000);
         updateWindowMax(_data.max_5m, _data.gx, _data.gy, _data.gz, now, 300000);
         updateWindowMax(_data.max_10m, _data.gx, _data.gy, _data.gz, now, 600000);
+
         updateWindowMax(_data.max_15m, _data.gx, _data.gy, _data.gz, now, 900000);
-        updateWindowMax(_data.max_30m, _data.gx, _data.gy, _data.gz, now, 1800000);
-        */
-       
+        updateWindowMax(_data.max_30m, _data.gx, _data.gy, _data.gz, now, 1800000);      
+        
+        if (last_sample_time_ms > 0) {
+            unsigned long delta = now - last_sample_time_ms;
+
+            if (delta > 0) {
+                float current_rate = 1000.0f / delta;
+
+                // Optional exponential moving average smoothing
+                float alpha = 0.05f;  // adjust to preference
+                samples_per_second = (alpha * current_rate) + ((1.0f - alpha) * samples_per_second);
+            } else {
+                dropped_samples++;
+            }
+        }
+        last_sample_time_ms = now;
+
+        // Store into MPUData so the API can access it
+        _data.total_samples = total_samples;
+        _data.dropped_samples = dropped_samples;
+        _data.samples_per_second = samples_per_second;
     }
 
     void MPU6000::setData(const data::MPUData& newData) {
