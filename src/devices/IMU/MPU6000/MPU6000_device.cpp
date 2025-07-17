@@ -178,8 +178,7 @@ namespace mpu6000 {
             d.max_g_windows_x[label] = max_x;
             d.max_g_windows_y[label] = max_y;
             d.max_g_windows_z[label] = max_z;
-        }
-            //*/
+        }            
     }
 
     void MPU6000::update() {
@@ -198,7 +197,6 @@ namespace mpu6000 {
         _data.pitch_deg = atan2(ax, sqrt(ay * ay + az * az)) * 180.0f / PI;
         _data.roll_deg  = atan2(ay, sqrt(ax * ax + az * az)) * 180.0f / PI;
 
-        
 
         if (fabs(_data.gx) > fabs(_data.max_gx)) _data.max_gx = _data.gx;
         if (fabs(_data.gy) > fabs(_data.max_gy)) _data.max_gy = _data.gy;
