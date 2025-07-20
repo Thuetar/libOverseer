@@ -1,12 +1,12 @@
 #include "MPU6000.h"
 
-namespace mpu6000 {
+namespace overseer::device::imu {
 
     MPU6000::MPU6000(uint8_t sda_pin, uint8_t scl_pin) {
         // You can add custom Wire pins initialization here if needed.
     }
 
-    bool MPU6000::init() {
+    bool MPU6000::begin() {
         Serial.println("MPU6000::INIT - Start");
         Wire.begin();
         delay(300);
@@ -45,9 +45,10 @@ namespace mpu6000 {
 
         Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
 
-        Serial.printf("Sample Stats: total=%llu, dropped=%llu, SPS=%.2f\n",
+        Serial.printf("Sample Stats: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n",
                     data.total_samples, data.dropped_samples, data.samples_per_second);
-
+        
+        /*
         Serial.println("--- Rolling Max G Windows ---");
         for (const auto& [label, val] : data.max_g_windows_x) {
             float gy = data.max_g_windows_y.count(label) ? data.max_g_windows_y.at(label) : 0;
@@ -55,6 +56,7 @@ namespace mpu6000 {
 
             Serial.printf(" [%s] Gx=%.3f, Gy=%.3f, Gz=%.3f\n", label.c_str(), val, gy, gz);
         }
+        */
         Serial.println("===========================");
     }
 
@@ -132,16 +134,16 @@ namespace mpu6000 {
         data.gz_last = data.gz;
     }
     */
-   void MPU6000::smoothAndFilterMPUData(data::MPUData& d, float alpha, float spike_thresh) {
+   void MPU6000::smoothAndFilterMPUData(data::MPUData& d) {
         // Exponential moving average
-        d.gx_smooth = alpha * d.gx + (1.0f - alpha) * d.gx_smooth;
-        d.gy_smooth = alpha * d.gy + (1.0f - alpha) * d.gy_smooth;
-        d.gz_smooth = alpha * d.gz + (1.0f - alpha) * d.gz_smooth;
+        d.gx_smooth = smoothing_alpha * d.gx + (1.0f - smoothing_alpha) * d.gx_smooth;
+        d.gy_smooth = smoothing_alpha * d.gy + (1.0f - smoothing_alpha) * d.gy_smooth;
+        d.gz_smooth = smoothing_alpha * d.gz + (1.0f - smoothing_alpha) * d.gz_smooth;
 
         // Spike rejection
-        if (abs(d.gx_smooth - d.gx) > spike_thresh) d.gx_smooth = d.gx;
-        if (abs(d.gy_smooth - d.gy) > spike_thresh) d.gy_smooth = d.gy;
-        if (abs(d.gz_smooth - d.gz) > spike_thresh) d.gz_smooth = d.gz;
+        if (abs(d.gx_smooth - d.gx) > spike_threshold) d.gx_smooth = d.gx;
+        if (abs(d.gy_smooth - d.gy) > spike_threshold) d.gy_smooth = d.gy;
+        if (abs(d.gz_smooth - d.gz) > spike_threshold) d.gz_smooth = d.gz;
 
         // Lifetime max tracking
         d.max_gx = std::max(d.max_gx, abs(d.gx_smooth));
@@ -225,8 +227,8 @@ namespace mpu6000 {
                 float current_rate = 1000.0f / delta;
 
                 // Optional exponential moving average smoothing
-                float alpha = 0.05f;  // adjust to preference
-                samples_per_second = (alpha * current_rate) + ((1.0f - alpha) * samples_per_second);
+                float smoothing_alpha = 0.05f;  // adjust to preference
+                samples_per_second = (smoothing_alpha * current_rate) + ((1.0f - smoothing_alpha) * samples_per_second);
             } else {
                 dropped_samples++;
             }
@@ -256,7 +258,7 @@ namespace mpu6000 {
     }
 
     void MPU6000::updateWindowMax(data::GMaxWindow& win, float gx, float gy, float gz, unsigned long now, unsigned long duration_ms) {
-        constexpr float alpha = 0.5f; // tunable smoothing factor (0.0–1.0)
+        constexpr float smoothing_alpha = 0.5f; // tunable smoothing factor (0.0–1.0)
 
         if (now - win.last_reset > duration_ms) {
             win.max_gx = fabs(gx); win.dir_gx = gx;
@@ -273,11 +275,11 @@ namespace mpu6000 {
             updateMax(win.max_gz, win.dir_gz, gz);
 
             // Smooth using exponential moving average
-            win.smooth_gx = alpha * win.max_gx + (1.0f - alpha) * win.smooth_gx;
-            win.smooth_gy = alpha * win.max_gy + (1.0f - alpha) * win.smooth_gy;
-            win.smooth_gz = alpha * win.max_gz + (1.0f - alpha) * win.smooth_gz;
+            win.smooth_gx = smoothing_alpha * win.max_gx + (1.0f - smoothing_alpha) * win.smooth_gx;
+            win.smooth_gy = smoothing_alpha * win.max_gy + (1.0f - smoothing_alpha) * win.smooth_gy;
+            win.smooth_gz = smoothing_alpha * win.max_gz + (1.0f - smoothing_alpha) * win.smooth_gz;
         }
     }
 
 
-} // namespace mpu6000
+} // namespace overseer::device::imu

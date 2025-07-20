@@ -1,11 +1,9 @@
 #pragma once
-#ifndef MPU_DATA_H
-#define MPU_DATA_H
 #include <map>
 #include <String>
 #include <Arduino.h>
 
-namespace mpu6000 {
+namespace overseer::device::imu {
     namespace data {
 
     struct GMaxWindow {
@@ -79,6 +77,6 @@ namespace mpu6000 {
     };
 
     }  // namespace data
-}  // namespace mpu6000
+}  // namespace overseer::device::imu
 
-#endif
+

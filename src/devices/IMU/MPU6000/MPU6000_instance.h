@@ -2,7 +2,7 @@
 #pragma once
 #include "MPU6000.h"
 
-namespace mpu6000 {
+namespace overseer::device::imu {
 
 // Singleton-style instance accessor — not a member function!
 inline MPU6000& getInstance() {
@@ -10,4 +10,4 @@ inline MPU6000& getInstance() {
     return instance;
 }
 
-} // namespace mpu6000
+} // namespace 

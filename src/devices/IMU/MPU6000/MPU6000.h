@@ -17,7 +17,7 @@
 #include <algorithm>
 
 
-namespace mpu6000 {
+namespace overseer::device::imu {
     class MPU6000 {
         private:
             bool initialized = false;
@@ -27,8 +27,7 @@ namespace mpu6000 {
             std::deque<std::pair<unsigned long, float>> gx_history;
             std::deque<std::pair<unsigned long, float>> gy_history;
             std::deque<std::pair<unsigned long, float>> gz_history;
-            //Comment, maybe... attempt to limit the size.
-            //const std::vector<unsigned long> g_windows = {1, 5, 10, 15, 30, 45, 60};
+            //Comment, maybe... attempt to limit the size.            
             const std::vector<unsigned long> g_windows = {1, 5, 10, 15, 30, 45, 60, 300, 600, 900, 1800}; // Declare historical windows (in seconds).
 
             // Internal helpers to track max values
@@ -39,18 +38,23 @@ namespace mpu6000 {
             uint64_t total_samples = 0;
             uint64_t dropped_samples = 0;
             float samples_per_second = 0.0f;
+
+            // Configuration parameters for smoothing and spike rejection
+            float smoothing_alpha = 0.1f;
+            float spike_threshold = 0.3f;
         public:
             MPU6000(uint8_t sda_pin = 20, uint8_t scl_pin = 21);
             bool isInititalized();              //Getter
-            bool init();                      // Initialize hardware
+            bool begin();                      // Initialize hardware
             void update();                     // Update readings & max G windows
             void setData(const data::MPUData& newData);  // Inject external data (stub/testing)
             data::MPUData getData() const;    // Retrieve current sensor data
-            void smoothAndFilterMPUData(data::MPUData& data, float smoothing_alpha, float spike_threshold);
-            void printMPUData(const mpu6000::data::MPUData& data);
+            //void smoothAndFilterMPUData(data::MPUData& data, float smoothing_alpha, float spike_threshold); //legacy... delete.
+            void smoothAndFilterMPUData(data::MPUData& data);
+            void printMPUData(const data::MPUData& data);
             
     };
 
-}  // namespace mpu6000
+}  // namespace overseer::device::imu
 
 #endif
