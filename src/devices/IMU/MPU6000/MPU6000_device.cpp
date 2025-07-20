@@ -1,10 +1,10 @@
 #include "MPU6000.h"
 
+using namespace overseer::device::imu::data;
+
 namespace overseer::device::imu {
 
-    MPU6000::MPU6000(uint8_t sda_pin, uint8_t scl_pin) {
-        // You can add custom Wire pins initialization here if needed.
-    }
+    MPU6000::MPU6000(uint8_t sda_pin, uint8_t scl_pin) {}
 
     bool MPU6000::begin() {
         Serial.println("MPU6000::INIT - Start");
@@ -28,26 +28,29 @@ namespace overseer::device::imu {
         #endif
 
         Log.setLevel (5);
-
+        //smoothing_alpha = running_config::
+        //spike_threshold
         initialized = true;
         return true;
     }
 
-    bool MPU6000::isInititalized() {
+    bool MPU6000::isInitialized() {
         return initialized;
     }
 
-    void MPU6000::printMPUData(const data::MPUData& data) {
+    void MPU6000::printMPUData(const MPUData& data) {
         Serial.println("=== IMU DATA REPORT ===");
         Serial.printf("Pitch: %.2f deg, Roll: %.2f deg\n", data.pitch_deg, data.roll_deg);
         Serial.printf("Raw G:    gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx, data.gy, data.gz);
         Serial.printf("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx_smooth, data.gy_smooth, data.gz_smooth);
 
         Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
-
-        Serial.printf("Sample Stats: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n",
-                    data.total_samples, data.dropped_samples, data.samples_per_second);
         
+        Serial.println("----- Stats -----");
+        Serial.printf("Total Samples: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n\n",
+                    data.total_samples, data.dropped_samples, data.samples_per_second);
+        Serial.println("----- Variables -----");
+        Serial.printf("smoothing_alpha: %F, spike_threshold: %F\n", smoothing_alpha, spike_threshold);
         /*
         Serial.println("--- Rolling Max G Windows ---");
         for (const auto& [label, val] : data.max_g_windows_x) {
@@ -134,7 +137,7 @@ namespace overseer::device::imu {
         data.gz_last = data.gz;
     }
     */
-   void MPU6000::smoothAndFilterMPUData(data::MPUData& d) {
+   void MPU6000::smoothAndFilterMPUData(MPUData& d) {
         // Exponential moving average
         d.gx_smooth = smoothing_alpha * d.gx + (1.0f - smoothing_alpha) * d.gx_smooth;
         d.gy_smooth = smoothing_alpha * d.gy + (1.0f - smoothing_alpha) * d.gy_smooth;
@@ -203,7 +206,7 @@ namespace overseer::device::imu {
         if (fabs(_data.gx) > fabs(_data.max_gx)) _data.max_gx = _data.gx;
         if (fabs(_data.gy) > fabs(_data.max_gy)) _data.max_gy = _data.gy;
         if (fabs(_data.gz) > fabs(_data.max_gz)) _data.max_gz = _data.gz;
-
+        /*
         updateWindowMax(_data.max_1s, _data.gx, _data.gy, _data.gz, now, 1000);
         updateWindowMax(_data.max_5s, _data.gx, _data.gy, _data.gz, now, 5000);
         updateWindowMax(_data.max_10s, _data.gx, _data.gy, _data.gz, now, 10000);
@@ -219,7 +222,7 @@ namespace overseer::device::imu {
 
         updateWindowMax(_data.max_15m, _data.gx, _data.gy, _data.gz, now, 900000);
         updateWindowMax(_data.max_30m, _data.gx, _data.gy, _data.gz, now, 1800000);      
-        
+        */
         if (last_sample_time_ms > 0) {
             unsigned long delta = now - last_sample_time_ms;
 
@@ -227,7 +230,7 @@ namespace overseer::device::imu {
                 float current_rate = 1000.0f / delta;
 
                 // Optional exponential moving average smoothing
-                float smoothing_alpha = 0.05f;  // adjust to preference
+                //float smoothing_alpha = 0.05f;  // adjust to preference
                 samples_per_second = (smoothing_alpha * current_rate) + ((1.0f - smoothing_alpha) * samples_per_second);
             } else {
                 dropped_samples++;
@@ -241,11 +244,11 @@ namespace overseer::device::imu {
         _data.samples_per_second = samples_per_second;
     }
 
-    void MPU6000::setData(const data::MPUData& newData) {
+    void MPU6000::setData(const MPUData& newData) {
         _data = newData;
     }
 
-    data::MPUData MPU6000::getData() const {
+    MPUData MPU6000::getData() const {
         return _data;
     }
 
@@ -257,8 +260,8 @@ namespace overseer::device::imu {
         }
     }
 
-    void MPU6000::updateWindowMax(data::GMaxWindow& win, float gx, float gy, float gz, unsigned long now, unsigned long duration_ms) {
-        constexpr float smoothing_alpha = 0.5f; // tunable smoothing factor (0.0–1.0)
+/*     void MPU6000::updateWindowMax(GMaxWindow& win, float gx, float gy, float gz, unsigned long now, unsigned long duration_ms) {
+        //constexpr float smoothing_alpha = 0.5f; // tunable smoothing factor (0.0–1.0)
 
         if (now - win.last_reset > duration_ms) {
             win.max_gx = fabs(gx); win.dir_gx = gx;
@@ -279,7 +282,7 @@ namespace overseer::device::imu {
             win.smooth_gy = smoothing_alpha * win.max_gy + (1.0f - smoothing_alpha) * win.smooth_gy;
             win.smooth_gz = smoothing_alpha * win.max_gz + (1.0f - smoothing_alpha) * win.smooth_gz;
         }
-    }
+    } */
 
 
 } // namespace overseer::device::imu

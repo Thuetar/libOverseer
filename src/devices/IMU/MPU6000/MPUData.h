@@ -5,7 +5,7 @@
 
 namespace overseer::device::imu {
     namespace data {
-
+        /*
     struct GMaxWindow {
         float max_gx = 0.0f;
         float max_gy = 0.0f;
@@ -23,7 +23,7 @@ namespace overseer::device::imu {
         
         unsigned long last_reset = 0;  // millis()
     };
-
+    */
     struct MPUData {
         
         uint64_t total_samples = 0;
@@ -62,7 +62,7 @@ namespace overseer::device::imu {
         std::map<String, float> max_g_windows_z;
         
         // Rolling max windows (time durations in ms)
-        GMaxWindow max_1s;
+/*         GMaxWindow max_1s;
         GMaxWindow max_5s;
         GMaxWindow max_10s;
         GMaxWindow max_15s;
@@ -73,7 +73,7 @@ namespace overseer::device::imu {
         GMaxWindow max_5m;
         GMaxWindow max_10m;
         GMaxWindow max_15m;
-        GMaxWindow max_30m;
+        GMaxWindow max_30m; */
     };
 
     }  // namespace data
