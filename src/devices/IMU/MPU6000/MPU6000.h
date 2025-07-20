@@ -20,7 +20,7 @@ namespace overseer::device::imu {
             bool initialized = false;
             MPU6050 mpu;
             MPUData _data;            
-            //void configureHardware();  // Wire, I2C, etc.
+            void configureHardware();  // Wire, I2C, etc.
             std::deque<std::pair<unsigned long, float>> gx_history;
             std::deque<std::pair<unsigned long, float>> gy_history;
             std::deque<std::pair<unsigned long, float>> gz_history;
@@ -28,9 +28,7 @@ namespace overseer::device::imu {
             const std::vector<unsigned long> g_windows = {1, 5, 10, 15, 30, 45, 60, 300, 600, 900, 1800}; // Declare historical windows (in seconds).
 
             // Internal helpers to track max values
-            //void updateMax(float& max_val, float new_val);
-            void updateMax(float &max_val, float &dir_val, float new_val);
-            //void updateWindowMax(GMaxWindow& win, float gx, float gy, float gz, unsigned long now, unsigned long duration_ms);
+            void updateMax(float &max_val, float &dir_val, float new_val);            
             uint64_t last_sample_time_ms = 0;
             uint64_t total_samples = 0;
             uint64_t dropped_samples = 0;
@@ -47,8 +45,7 @@ namespace overseer::device::imu {
             bool begin();                      // Initialize hardware
             void update();                     // Update readings & max G windows
             void setData(const MPUData& newData);  // Inject external data (stub/testing)
-            MPUData getData() const;    // Retrieve current sensor data
-            //void smoothAndFilterMPUData(data::MPUData& data, float smoothing_alpha, float spike_threshold); //legacy... delete.
+            MPUData getData() const;    // Retrieve current sensor data            
             void smoothAndFilterMPUData(MPUData& data);
             void printMPUData(const MPUData& data);
             

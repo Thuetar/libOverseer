@@ -11,9 +11,9 @@ namespace overseer::device::imu {
         Wire.begin();
         delay(300);
         mpu.initialize();
-        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);  // or _4, _8, _16
-        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
-
+        //mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);  // or _4, _8, _16
+        //mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
+        configureHardware();
         #if MPU_RUN_DEVICE_TEST_CONNECT 
             unsigned long start = millis();
             while (!mpu.testConnection()) {
@@ -32,6 +32,14 @@ namespace overseer::device::imu {
         //spike_threshold
         initialized = true;
         return true;
+    }
+
+    void MPU6000::configureHardware() {
+        
+        // Example:
+        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
+        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2); // or _4, _8, _16
+        // Could add more config here
     }
 
     bool MPU6000::isInitialized() {
@@ -206,23 +214,7 @@ namespace overseer::device::imu {
         if (fabs(_data.gx) > fabs(_data.max_gx)) _data.max_gx = _data.gx;
         if (fabs(_data.gy) > fabs(_data.max_gy)) _data.max_gy = _data.gy;
         if (fabs(_data.gz) > fabs(_data.max_gz)) _data.max_gz = _data.gz;
-        /*
-        updateWindowMax(_data.max_1s, _data.gx, _data.gy, _data.gz, now, 1000);
-        updateWindowMax(_data.max_5s, _data.gx, _data.gy, _data.gz, now, 5000);
-        updateWindowMax(_data.max_10s, _data.gx, _data.gy, _data.gz, now, 10000);
-        updateWindowMax(_data.max_15s, _data.gx, _data.gy, _data.gz, now, 15000);
 
-        updateWindowMax(_data.max_30s, _data.gx, _data.gy, _data.gz, now, 30000);
-        updateWindowMax(_data.max_45s, _data.gx, _data.gy, _data.gz, now, 45000);
-        updateWindowMax(_data.max_60s, _data.gx, _data.gy, _data.gz, now, 60000);
-        
-        updateWindowMax(_data.max_1m, _data.gx, _data.gy, _data.gz, now, 60000);
-        updateWindowMax(_data.max_5m, _data.gx, _data.gy, _data.gz, now, 300000);
-        updateWindowMax(_data.max_10m, _data.gx, _data.gy, _data.gz, now, 600000);
-
-        updateWindowMax(_data.max_15m, _data.gx, _data.gy, _data.gz, now, 900000);
-        updateWindowMax(_data.max_30m, _data.gx, _data.gy, _data.gz, now, 1800000);      
-        */
         if (last_sample_time_ms > 0) {
             unsigned long delta = now - last_sample_time_ms;
 
