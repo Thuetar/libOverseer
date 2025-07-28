@@ -51,8 +51,9 @@ namespace overseer::device::imu {
         //Serial.printf("Smooth G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.gx_smooth, data.gy_smooth, data.gz_smooth);
 
         //Serial.printf("Lifetime Max G: gx=%.3f, gy=%.3f, gz=%.3f\n", data.max_gx, data.max_gy, data.max_gz);
-        auto max_gforce = max(gx, gy, gz);
-        Serial.printf("Lifetime Max G: %.3f)
+        float max_gforce = std::max(data.gx, std::max(data.gy, data.gz));
+
+        Serial.printf("Lifetime Max G: %.3f", max_gforce);
         Serial.println("----- Stats -----");
         Serial.printf("Total Samples: Total=%llu, Dropped=%llu, Samples/sec=%.2f\n\n",
                     data.total_samples, data.dropped_samples, data.samples_per_second);
