@@ -4,7 +4,9 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/justin/Documents/PlatformIO/Projects/IMU_ESP32_MINI/.pio/libdeps/esp32-s3-devkitc-1/ADS1X15"
+                "/Users/justin/Documents/PlatformIO/Projects/IMU_ESP32_MINI/.pio/libdeps/esp32-s3-devkitc-1/ADS1X15",
+                "/Users/justin/.platformio/packages/framework-arduinoespressif32/cores/esp32",
+                "/Users/justin/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include"
             ],
             "defines": [],
             "compilerPath": "/Users/justin/.platformio/packages/toolchain-xtensa-esp32s3/bin/xtensa-esp32s3-elf-gcc",

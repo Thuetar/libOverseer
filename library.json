@@ -1,6 +1,6 @@
 {
   "name": "libOverseer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Shared Library",
   "keywords": "planetCoach",
   "repository": {
@@ -25,7 +25,8 @@
       "-<test/>",
       "-<test*>",
       "-<*/test/>",
-      "-<**/test*>"
+      "-<**/test*>",
+      "-<**/docs*>"
     ]
   }
 }

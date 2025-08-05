@@ -3,7 +3,7 @@
 
 //#include "device/IMU/MPU6000.h"    
 
-using namespace overseer::device::imu;
+//using namespace overseer::device::imu;
 namespace overseer{
     struct RUNNING_CONFIG
     {

@@ -1,6 +1,6 @@
 //DHTFAMILY_instance.h
 #pragma once
-#include "DHTFAMILY.h"
+#include "device/environment/DHTFAMILY.h"
 
 namespace overseer::device::environment {
 
